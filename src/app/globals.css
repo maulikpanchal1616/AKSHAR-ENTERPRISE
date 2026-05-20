@@ -1,0 +1,414 @@
+@import "tailwindcss";
+
+/* ==============================
+   DESIGN TOKENS
+============================== */
+:root {
+  --clr-bg:       #f8fafc;
+  --clr-blue:     #0284c7;
+  --clr-glow:     #38bdf8;
+  --clr-panel:    #ffffff;
+  --clr-border:   rgba(0,0,0,0.08);
+  --clr-steel:    #475569;
+  --radius-lg:    1.25rem;
+  --radius-md:    0.875rem;
+}
+
+/* ==============================
+   RESET
+============================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background: var(--clr-bg);
+  color: #0f172a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* NO overflow:hidden — must stay scrollable */
+  overflow-x: hidden;
+}
+
+/* ==============================
+   TYPOGRAPHY SYSTEM
+============================== */
+.t-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.42em;
+  color: var(--clr-blue);
+  display: block;
+}
+
+/* Only used in the Hero section */
+.t-hero {
+  font-size: clamp(3rem, 8vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+
+/* Section headings  */
+.t-section {
+  font-size: clamp(2rem, 4vw, 3.75rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+
+/* Card / widget headings */
+.t-card {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+/* ==============================
+   LAYOUT
+============================== */
+/* Full-width stripe with border */
+.section-stripe, .page-section {
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 8rem 0;
+}
+
+/* Centred content container */
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 4rem;
+}
+
+/* ==============================
+   GLASS PANELS
+============================== */
+.panel {
+  background: var(--clr-panel);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+}
+
+/* Thin top shimmer line */
+.panel::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(2,132,199,0.2), transparent);
+  pointer-events: none;
+}
+
+/* ==============================
+   BUTTONS
+============================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.9rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 900;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  cursor: pointer;
+  border: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.btn-blue {
+  background: var(--clr-blue);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(14,165,233,0.25);
+}
+
+.btn-blue:hover {
+  box-shadow: 0 16px 48px rgba(14,165,233,0.45);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.btn-ghost:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: rgba(0,0,0,0.2);
+}
+
+/* ==============================
+   SCROLL PROGRESS BAR
+============================== */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(14,165,233,0.08);
+  z-index: 9999;
+}
+
+#scroll-progress-bar,
+.scroll-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0284c7, #38bdf8);
+  box-shadow: 0 0 10px rgba(2,132,199,0.4);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: rgba(2,132,199,0.08);
+  z-index: 9999;
+}
+
+/* ==============================
+   FORM INPUTS
+============================== */
+.input {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.2rem;
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.25s;
+  font-family: inherit;
+}
+
+.input:focus { border-color: rgba(2,132,199,0.5); }
+.input::placeholder { color: #94a3b8; }
+
+/* ==============================
+   SCROLLBAR
+============================== */
+::-webkit-scrollbar          { width: 3px; }
+::-webkit-scrollbar-track    { background: transparent; }
+::-webkit-scrollbar-thumb    { background: rgba(14,165,233,0.2); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(14,165,233,0.45); }
+
+/* ==============================
+   ANIMATIONS
+============================== */
+@keyframes pulse-glow {
+  0%,100% { opacity: 0.4; }
+  50%     { opacity: 1;   }
+}
+@keyframes float-up {
+  0%,100% { transform: translateY(0);  }
+  50%     { transform: translateY(-8px); }
+}
+
+.anim-pulse { animation: pulse-glow 2.5s ease-in-out infinite; }
+.anim-float { animation: float-up   5s ease-in-out infinite; }
+
+/* ==============================
+   MOBILE BREAKPOINTS & RESPONSIVENESS
+============================== */
+@media (max-width: 768px) {
+  .container { padding: 0 1.25rem; }
+  .section-stripe, .page-section { padding: 5rem 0; }
+}
+
+/* Responsive Grids & Layouts */
+.chatbot-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chatbot-sidebar-title {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: #0f172a;
+}
+
+@media (min-width: 1024px) {
+  .chatbot-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 4rem;
+    align-items: stretch;
+  }
+}
+
+.floating-assistant-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 9999;
+}
+
+.floating-assistant-panel {
+  position: fixed;
+  bottom: 96px;
+  right: 16px;
+  left: 16px;
+  width: auto;
+}
+
+@media (min-width: 480px) {
+  .floating-assistant-container {
+    bottom: 40px;
+    right: 40px;
+  }
+  .floating-assistant-panel {
+    position: absolute;
+    bottom: 76px;
+    right: 0;
+    left: auto;
+    width: 360px;
+  }
+}
+
+.hero-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 5rem;
+    align-items: center;
+  }
+}
+
+.stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+@media (min-width: 480px) {
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    align-items: start;
+  }
+}
+
+.quick-metrics-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .quick-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.support-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .support-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    align-items: start;
+  }
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.footer-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 4rem;
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.back-to-top {
+  position: absolute;
+  right: 1.25rem;
+  top: -1.5rem;
+}
+
+@media (min-width: 768px) {
+  .back-to-top {
+    right: 4rem;
+  }
+}
