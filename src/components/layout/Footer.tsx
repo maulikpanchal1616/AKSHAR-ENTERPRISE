@@ -27,11 +27,14 @@ const Footer = () => {
           {/* Brand Info */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <img 
-                src="/nameWithoutbg.png" 
-                alt="AXAR Enterprise Logo" 
-                style={{ height: 42, width: 'auto', objectFit: 'contain' }}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1 }}>
+                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+                  AXAR
+                </span>
+                <span style={{ fontSize: '0.55rem', fontWeight: 900, color: '#0284c7', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: '0.1rem' }}>
+                  ENTERPRISE
+                </span>
+              </div>
             </div>
             <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.7, fontWeight: 500, maxWidth: 300 }}>
               Pioneering energy-efficient industrial drying, evaporation, and environmental engineering solutions since 2009.

@@ -144,11 +144,14 @@ const Navbar = () => {
               whileTap={{ scale: 0.98 }}
               style={{ display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
             >
-              <img 
-                src="/nameWithoutbg.png" 
-                alt="AXAR Enterprise Logo" 
-                style={{ height: 42, width: 'auto', objectFit: 'contain' }}
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', lineHeight: 1 }}>
+                <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#f97316', letterSpacing: '-0.02em', textTransform: 'uppercase' }}>
+                  AXAR
+                </span>
+                <span style={{ fontSize: '0.55rem', fontWeight: 900, color: '#0284c7', letterSpacing: '0.25em', textTransform: 'uppercase', marginTop: '0.1rem' }}>
+                  ENTERPRISE
+                </span>
+              </div>
             </motion.button>
 
             {/* NAV LINKS — desktop */}

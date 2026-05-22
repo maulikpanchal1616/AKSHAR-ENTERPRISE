@@ -32,6 +32,19 @@ export default function RootLayout({
                   window.history.replaceState(null, '', window.location.pathname + window.location.search);
                 }
                 window.scrollTo(0, 0);
+
+                const hideNetlify = () => {
+                  document.querySelectorAll('netlify-drawer, iframe[src*=\"netlify.com\"], iframe[src*=\"netlify.app\"], #netlify-identity-widget, #netlify-drawer, .netlify-drawer, [class*=\"netlify-drawer\"]').forEach(el => {
+                    el.style.setProperty('display', 'none', 'important');
+                    el.style.setProperty('visibility', 'hidden', 'important');
+                    el.style.setProperty('opacity', '0', 'important');
+                    el.style.setProperty('pointer-events', 'none', 'important');
+                  });
+                };
+                hideNetlify();
+                setInterval(hideNetlify, 300);
+                const observer = new MutationObserver(hideNetlify);
+                observer.observe(document.documentElement, { childList: true, subtree: true });
               }
             `,
           }}

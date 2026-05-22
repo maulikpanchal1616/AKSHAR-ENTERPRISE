@@ -296,25 +296,53 @@ const RFQWizard = () => {
           </AnimatePresence>
 
           {/* Controls */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-            <button 
-              onClick={prevStep}
-              className="btn btn-ghost"
-              style={{ visibility: step === 1 ? 'hidden' : 'visible' }}
-            >
-              <ChevronLeft style={{ width: 16, height: 16 }} />
-              Back
-            </button>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            marginTop: '4rem', 
+            paddingTop: '2rem', 
+            borderTop: '1px solid rgba(0,0,0,0.06)',
+            gap: '1rem'
+          }}>
+            {/* Left Column: Back button */}
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+              <button 
+                onClick={prevStep}
+                className="btn btn-ghost"
+                style={{ 
+                  padding: '0.65rem 1.25rem',
+                  display: step === 1 ? 'none' : 'inline-flex'
+                }}
+              >
+                <ChevronLeft style={{ width: 16, height: 16 }} />
+                <span>Back</span>
+              </button>
+              {step === 1 && <div style={{ height: 38 }} />}
+            </div>
             
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <span style={{ fontSize: 11, fontWeight: 900, color: '#64748b', textTransform: 'uppercase', display: 'flex', alignItems: 'center' }}>
+            {/* Center Column: Progress text */}
+            <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+              <span style={{ 
+                fontSize: 10, 
+                fontWeight: 900, 
+                color: '#64748b', 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.15em',
+                whiteSpace: 'nowrap'
+              }}>
                 Step {step} of {totalSteps}
               </span>
+            </div>
+            
+            {/* Right Column: Continue button */}
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
               <button 
                 onClick={step === totalSteps ? transmitRFQ : nextStep}
                 className="btn btn-blue"
+                style={{ padding: '0.65rem 1.5rem', gap: '0.5rem' }}
               >
-                {step === totalSteps ? 'Transmit RFQ' : 'Continue'}
+                <span>{step === totalSteps ? 'Transmit RFQ' : 'Continue'}</span>
                 {step === totalSteps ? <Zap style={{ width: 14, height: 14 }} /> : <ChevronRight style={{ width: 16, height: 16 }} />}
               </button>
             </div>

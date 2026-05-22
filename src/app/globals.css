@@ -412,3 +412,20 @@ html, body {
     right: 4rem;
   }
 }
+
+/* ==============================
+   HIDE PLATFORM DEPLOY DRAWER & FEEDBACK WIDGETS
+============================= */
+iframe[src*="netlify.com"],
+iframe[src*="netlify.app"],
+netlify-drawer,
+#netlify-identity-widget,
+#netlify-drawer,
+.netlify-drawer,
+[class*="netlify-drawer"],
+nextjs-portal {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

@@ -22,8 +22,7 @@ const Hero = () => {
     if (!ref.current) return;
     const ctx = gsap.context(() => {
       gsap.timeline({ defaults: { ease: 'power3.out' } })
-        .from('.h-badge', { opacity: 0, x: -20, duration: 0.7, delay: 0.4 })
-        .from('.h-l1',    { opacity: 0, y: 50,  duration: 0.85 }, '-=0.4')
+        .from('.h-l1',    { opacity: 0, y: 50,  duration: 0.85, delay: 0.4 })
         .from('.h-l2',    { opacity: 0, y: 50,  duration: 0.85 }, '-=0.7')
         .from('.h-l3',    { opacity: 0, y: 50,  duration: 0.85 }, '-=0.7')
         .from('.h-desc',  { opacity: 0, y: 18,  duration: 0.7  }, '-=0.5')
@@ -37,11 +36,13 @@ const Hero = () => {
     <div
       ref={ref}
       id="hero"
-      className="relative flex items-start lg:items-center pt-36 pb-16 md:pt-40 md:pb-20"
+      className="relative flex items-start lg:items-center"
       style={{
         minHeight: '100vh',
         overflow: 'hidden',
         background: 'transparent',
+        paddingTop: 'clamp(124px, 10vw, 140px)',
+        paddingBottom: 'clamp(60px, 8vw, 100px)'
       }}
     >
       <IndustrialThree />
@@ -63,15 +64,6 @@ const Hero = () => {
 
           {/* LEFT */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div className="h-badge" style={{
-              display: 'inline-flex', alignItems: 'center', gap: '0.75rem',
-              padding: '0.5rem 1.1rem', borderRadius: 9999,
-              background: '#ffffff', border: '1px solid rgba(2,132,199,0.2)',
-              width: 'fit-content',
-            }}>
-              <div className="anim-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: '#0284c7', boxShadow: '0 0 10px rgba(2,132,199,0.5)' }} />
-              <span className="t-label" style={{ letterSpacing: '0.35em' }}>Process Engineering Core: Active</span>
-            </div>
 
             <h1 className="t-hero">
               <div className="h-l1" style={{ overflow: 'hidden', padding: '0.08em 0', margin: '-0.08em 0' }}><span style={{ display: 'block' }}>PRECISION</span></div>
