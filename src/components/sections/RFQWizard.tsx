@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Zap, CheckCircle2, ClipboardCheck, Settings, Users } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Zap, CheckCircle2, ClipboardCheck, Settings, Users, Mail } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 const PRODUCT_NAMES: Record<string, string> = {
@@ -59,6 +59,7 @@ const RFQWizard = () => {
   const [email, setEmail]               = useState('');
   const [company, setCompany]           = useState('');
   const [submitted, setSubmitted]       = useState(false);
+  const [loading, setLoading]           = useState(false);
 
   // Sync state if product parameters change dynamically
   useEffect(() => {
@@ -70,9 +71,63 @@ const RFQWizard = () => {
   const nextStep = () => setStep(s => Math.min(s + 1, totalSteps));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
-  const transmitRFQ = (e: React.FormEvent) => {
-    e.preventDefault();
+  const transmitRFQ = async (e: React.FormEvent) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (!fullname || !email) {
+      alert("Please fill in your name and email in Step 3.");
+      return;
+    }
+    setLoading(true);
+
+    try {
+      // Direct Web3Forms submission to the owner's official email
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          access_key: "6b26cf8d-1941-4560-b8ec-f623ff3a339a", // Public Web3Forms key configured for RFQ
+          name: fullname,
+          email: email,
+          subject: `[RFQ-PROPOSAL] ${processType} - ${fullname} (${company})`,
+          message: `New Technical RFQ Proposal requested:\n\n` +
+            `--- CONTACT DETAILS ---\n` +
+            `Full Name: ${fullname}\n` +
+            `Email: ${email}\n` +
+            `Company: ${company}\n\n` +
+            `--- TECHNICAL PARAMETERS ---\n` +
+            `Process Type: ${processType}\n` +
+            `Daily Throughput: ${throughput || 'N/A'} KG\n` +
+            `Material Spec: ${materialSpec || 'N/A'}\n` +
+            `Inlet Temperature: ${inletTemp}°C\n` +
+            `Utility Heat Source: ${heatSource}\n`,
+          from_name: "AXAR Enterprise RFQ System"
+        })
+      });
+      console.log("RFQ Submission status:", res);
+    } catch (err) {
+      console.error("RFQ Submission failed:", err);
+    }
+
+    setLoading(false);
     setSubmitted(true);
+  };
+
+  const handleRFQMailtoFallback = () => {
+    const subject = encodeURIComponent(`[RFQ-PROPOSAL] ${processType} - ${fullname} (${company})`);
+    const body = encodeURIComponent(
+      `AXAR Enterprise Technical RFQ Specification:\n\n` +
+      `--- CONTACT DETAILS ---\n` +
+      `Full Name: ${fullname}\n` +
+      `Email: ${email}\n` +
+      `Company: ${company}\n\n` +
+      `--- TECHNICAL PARAMETERS ---\n` +
+      `Process Type: ${processType}\n` +
+      `Daily Throughput: ${throughput || 'N/A'} KG/Day\n` +
+      `Material Spec: ${materialSpec || 'N/A'}\n` +
+      `Inlet Temperature: ${inletTemp}°C\n` +
+      `Utility Heat Source: ${heatSource}\n`
+    );
+    window.location.href = `mailto:maulikvpanchal2006@gmail.com?subject=${subject}&body=${body}`;
   };
 
   if (submitted) {
@@ -91,11 +146,35 @@ const RFQWizard = () => {
           <p style={{ fontSize: 14, color: '#475569', lineHeight: 1.7, fontWeight: 500, marginBottom: '2rem' }}>
             Your custom specification log for a **{processType}** system has been saved into AXAR Enterprise process records. An engineering lead will review your data parameters and reach out with a detailed technical proposal within 24 hours.
           </p>
-          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#0284c7', background: 'rgba(14,165,233,0.04)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'left', lineHeight: 1.8 }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 10, color: '#0284c7', background: 'rgba(14,165,233,0.04)', padding: '1rem', borderRadius: '0.5rem', textAlign: 'left', lineHeight: 1.8, marginBottom: '2.5rem' }}>
             <div>[STATUS] PIPELINE CONFIGURATION ARCHIVED</div>
             <div>[TYPE] {processType.toUpperCase()}</div>
             <div>[CAPACITY] {throughput || 'N/A'} KG/DAY</div>
             <div>[REGULATORY] ASME & ISO STAMP ASSURED</div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 320, margin: '0 auto' }}>
+            <button 
+              onClick={handleRFQMailtoFallback}
+              className="btn btn-blue"
+              style={{ padding: '0.85rem', width: '100%', gap: '0.5rem' }}
+            >
+              <Mail style={{ width: 16, height: 16 }} />
+              <span>Direct Email Dispatch (Backup)</span>
+            </button>
+            <button 
+              onClick={() => {
+                setSubmitted(false);
+                setStep(1);
+                setFullname('');
+                setEmail('');
+                setCompany('');
+              }}
+              className="btn btn-ghost"
+              style={{ padding: '0.85rem', width: '100%' }}
+            >
+              <span>Submit New Specification</span>
+            </button>
           </div>
         </motion.div>
       </div>
@@ -371,8 +450,9 @@ const RFQWizard = () => {
                 onClick={step === totalSteps ? transmitRFQ : nextStep}
                 className="btn btn-blue"
                 style={{ padding: '0.65rem 1.5rem', gap: '0.5rem' }}
+                disabled={loading}
               >
-                <span>{step === totalSteps ? 'Transmit RFQ' : 'Continue'}</span>
+                <span>{step === totalSteps ? (loading ? 'Transmitting...' : 'Transmit RFQ') : 'Continue'}</span>
                 {step === totalSteps ? <Zap style={{ width: 14, height: 14 }} /> : <ChevronRight style={{ width: 16, height: 16 }} />}
               </button>
             </div>
