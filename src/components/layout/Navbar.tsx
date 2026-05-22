@@ -6,12 +6,12 @@ import { Cpu, Menu, X, ChevronRight, Zap } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 const navLinks = [
-  { label: 'Platform',   path: '/'           },
-  { label: 'AI System',  path: '/ai-system'  },
-  { label: 'Solutions',  path: '/solutions'  },
-  { label: 'Products',   path: '/products'   },
-  { label: 'Analytics',  path: '/analytics'  },
-  { label: 'Contact',    path: '/contact'    },
+  { label: 'Platform',   path: '/',           targetId: 'hero' },
+  { label: 'AI System',  path: '/ai-system',  targetId: 'consultant' },
+  { label: 'Solutions',  path: '/solutions',  targetId: 'solutions' },
+  { label: 'Products',   path: '/products',   targetId: 'products' },
+  { label: 'Analytics',  path: '/analytics',  targetId: 'dashboard' },
+  { label: 'Contact',    path: '/contact',    targetId: 'support' },
 ];
 
 const Navbar = () => {
@@ -34,20 +34,41 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Update active navigation link based on current path
+  // Scroll Spy to highlight the active section on scroll (only active on home page '/')
   useEffect(() => {
-    const matched = navLinks.find(link => {
-      if (link.path === '/') {
-        return pathname === '/';
-      }
-      return pathname.startsWith(link.path);
-    });
-    
-    if (matched) {
-      setActiveLink(matched.path);
-    } else {
-      setActiveLink('/');
+    if (pathname !== '/') {
+      // On subpages, highlight active link based on pathname
+      const matched = navLinks.find(link => link.path !== '/' && pathname.startsWith(link.path));
+      setActiveLink(matched ? matched.path : '/');
+      return;
     }
+
+    const handleScrollSpy = () => {
+      const scrollPosition = window.scrollY + 180; // trigger offset for section highlight
+
+      // Find the section that is currently active in the viewport
+      let activeSection = '/'; // fallback to Platform (Hero)
+      
+      for (const link of navLinks) {
+        if (link.targetId) {
+          const el = document.getElementById(link.targetId);
+          if (el) {
+            const top = el.getBoundingClientRect().top + window.scrollY;
+            const height = el.offsetHeight;
+            if (scrollPosition >= top && scrollPosition < top + height) {
+              activeSection = link.path;
+              break;
+            }
+          }
+        }
+      }
+      setActiveLink(activeSection);
+    };
+
+    window.addEventListener('scroll', handleScrollSpy, { passive: true });
+    handleScrollSpy();
+
+    return () => window.removeEventListener('scroll', handleScrollSpy);
   }, [pathname]);
 
   // 3D mouse tilt effect on navbar
@@ -68,9 +89,30 @@ const Navbar = () => {
   const rotateX = useTransform(mouseY, v => `${v}deg`);
   const rotateY = useTransform(mouseX, v => `${v}deg`);
 
-  const navigateTo = (path: string) => {
-    router.push(path);
+  const navigateTo = (link: { label: string; path: string; targetId: string }) => {
     setMobileOpen(false);
+    if (pathname === '/') {
+      const el = document.getElementById(link.targetId);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    } else {
+      router.push(`/?to=${link.targetId}`);
+    }
+  };
+
+  const handleRfqClick = () => {
+    setMobileOpen(false);
+    if (pathname === '/') {
+      const el = document.getElementById('rfq');
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    } else {
+      router.push('/?to=rfq');
+    }
   };
 
   return (
@@ -139,7 +181,13 @@ const Navbar = () => {
 
             {/* LOGO */}
             <motion.button
-              onClick={() => navigateTo('/')}
+              onClick={() => {
+                if (pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                  router.push('/');
+                }
+              }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               style={{ display: 'flex', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
@@ -159,7 +207,7 @@ const Navbar = () => {
               {navLinks.map(link => (
                 <div key={link.path} style={{ position: 'relative' }}>
                   <motion.button
-                    onClick={() => navigateTo(link.path)}
+                    onClick={() => navigateTo(link)}
                     onMouseEnter={() => setHoveredLink(link.path)}
                     onMouseLeave={() => setHoveredLink(null)}
                     whileTap={{ scale: 0.95 }}
@@ -217,7 +265,7 @@ const Navbar = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <motion.button
                 className="hidden md:flex btn-primary"
-                onClick={() => navigateTo('/rfq')}
+                onClick={handleRfqClick}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
                 style={{ padding: '0.65rem 1.5rem', gap: '0.5rem' }}
@@ -275,7 +323,7 @@ const Navbar = () => {
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => navigateTo(link.path)}
+                onClick={() => navigateTo(link)}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   width: '100%', padding: '0.875rem 1rem', borderRadius: '0.75rem',
@@ -295,7 +343,7 @@ const Navbar = () => {
             <button
               className="btn-primary"
               style={{ width: '100%', justifyContent: 'center' }}
-              onClick={() => navigateTo('/rfq')}
+              onClick={handleRfqClick}
             >
               Initialize RFQ Engine
             </button>

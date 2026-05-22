@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Hero from "@/components/sections/Hero";
 
@@ -15,6 +15,23 @@ const FloatingAssistant = dynamic(() => import("@/components/layout/FloatingAssi
 const TrustedEcosystem  = dynamic(() => import("@/components/sections/TrustedEcosystem"),  { ssr: false });
 
 export default function Home() {
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const to = params.get('to');
+      if (to) {
+        window.history.replaceState(null, '', '/');
+        setTimeout(() => {
+          const el = document.getElementById(to);
+          if (el) {
+            const y = el.getBoundingClientRect().top + window.scrollY - 90;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }, 400);
+      }
+    }
+  }, []);
+
   return (
     <div className="bg-[#f8fafc] text-slate-900" style={{ position: 'relative' }}>
 
