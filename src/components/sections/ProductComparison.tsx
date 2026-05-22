@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Info, Layers, Gauge, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, Info, Layers, Gauge, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -331,16 +331,19 @@ const ProductComparison = () => {
                     <button
                       className="btn btn-ghost"
                       style={{ padding: '0.65rem 0.75rem' }}
+                      title="Request Proposal"
                       onClick={() => {
                         const el = document.getElementById('rfq');
                         if (el) {
-                          el.scrollIntoView({ behavior: 'smooth' });
+                          router.push(`/?product=${p.id}#rfq`, { scroll: false });
+                          const y = el.getBoundingClientRect().top + window.scrollY - 90;
+                          window.scrollTo({ top: y, behavior: 'smooth' });
                         } else {
-                          router.push('/rfq');
+                          router.push(`/rfq?product=${p.id}`);
                         }
                       }}
                     >
-                      <Info style={{ width: 14, height: 14 }} />
+                      <Zap style={{ width: 14, height: 14, color: '#f97316' }} />
                     </button>
                   </div>
                 </div>

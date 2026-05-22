@@ -5,6 +5,40 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Zap, CheckCircle2, ClipboardCheck, Settings, Users } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
+const PRODUCT_NAMES: Record<string, string> = {
+  "spray-dryer": "Spray Dryer",
+  "spray-dryers": "Spray Dryer",
+  "spin-flash-dryer": "Spin Flash Dryer",
+  "spin-flash": "Spin Flash Dryer",
+  "flash-dryer": "Flash Dryer",
+  "flash-dryers": "Flash Dryer",
+  "vibratory-fluidized-bed": "Vibratory Fluidized Bed Dryer",
+  "vibratory-bed": "Vibratory Fluidized Bed Dryer",
+  "hot-air-generator": "Hot Air Generator",
+  "hot-air-generators": "Hot Air Generator",
+  "industrial-blowers": "Industrial Blowers",
+  "bag-filter": "Bag Filter",
+  "wet-scrubber": "Wet Scrubber System",
+  "reactors": "Reactors",
+  "heat-exchangers": "Heat Exchangers",
+  "pressure-vessels": "Pressure Vessels",
+  "sand-mill": "Sand Mill",
+  "screw-conveyor": "Screw Conveyor",
+  "ribbon-blender": "Ribbon Blender",
+  "strainer": "Strainer",
+  "expansion-bellows": "Expansion Bellows"
+};
+
+const getProcessName = (param: string) => {
+  if (!param) return "Spray Dryer";
+  const slug = param.toLowerCase().trim();
+  if (PRODUCT_NAMES[slug]) return PRODUCT_NAMES[slug];
+  return param
+    .split(/[-_ ]+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
 const RFQWizard = () => {
   const [step, setStep] = useState(1);
   const totalSteps = 3;
@@ -13,21 +47,7 @@ const RFQWizard = () => {
   const productParam = searchParams.get('product') || '';
 
   // Determine initial process type selection based on search parameters
-  let initialProcess = "Spray Dryer";
-  const normalized = productParam.toLowerCase().replace(/ /g, '-');
-  if (normalized.includes('spray')) {
-    initialProcess = "Spray Dryer";
-  } else if (normalized.includes('spin') || normalized.includes('flash')) {
-    initialProcess = "Spin Flash Dryer";
-  } else if (normalized.includes('evaporator') || normalized.includes('mvr')) {
-    initialProcess = "MVR Evaporator";
-  } else if (normalized.includes('zld') || normalized.includes('zero')) {
-    initialProcess = "ZLD Plant";
-  } else if (normalized.includes('hot-air') || normalized.includes('generator')) {
-    initialProcess = "Hot Air Generator";
-  } else if (normalized.includes('pollution') || normalized.includes('scrubber') || normalized.includes('filter') || normalized.includes('bag') || normalized.includes('wet')) {
-    initialProcess = "Pollution Control System";
-  }
+  const initialProcess = getProcessName(productParam);
 
   // Controlled form states
   const [processType, setProcessType]   = useState(initialProcess);
@@ -43,13 +63,7 @@ const RFQWizard = () => {
   // Sync state if product parameters change dynamically
   useEffect(() => {
     if (productParam) {
-      const norm = productParam.toLowerCase().replace(/ /g, '-');
-      if (norm.includes('spray')) setProcessType("Spray Dryer");
-      else if (norm.includes('spin') || norm.includes('flash')) setProcessType("Spin Flash Dryer");
-      else if (norm.includes('evaporator') || norm.includes('mvr')) setProcessType("MVR Evaporator");
-      else if (norm.includes('zld') || norm.includes('zero')) setProcessType("ZLD Plant");
-      else if (norm.includes('hot-air') || norm.includes('generator')) setProcessType("Hot Air Generator");
-      else if (norm.includes('pollution') || norm.includes('scrubber') || norm.includes('filter') || norm.includes('bag') || norm.includes('wet')) setProcessType("Pollution Control System");
+      setProcessType(getProcessName(productParam));
     }
   }, [productParam]);
 
@@ -144,20 +158,36 @@ const RFQWizard = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     <label style={{ fontSize: 10, fontWeight: 900, textTransform: 'uppercase', color: '#64748b', letterSpacing: '0.15em' }}>Process Type</label>
                     <div style={{ position: 'relative' }}>
-                      <select 
+                      <input 
+                        type="text"
                         className="input" 
-                        style={{ appearance: 'none', width: '100%' }}
+                        style={{ width: '100%' }}
                         value={processType}
                         onChange={e => setProcessType(e.target.value)}
-                      >
-                        <option>Spray Dryer</option>
-                        <option>Spin Flash Dryer</option>
-                        <option>MVR Evaporator</option>
-                        <option>ZLD Plant</option>
-                        <option>Hot Air Generator</option>
-                        <option>Pollution Control System</option>
-                      </select>
-                      <div style={{ position: 'absolute', right: '1.2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', borderLeft: '4px solid transparent', borderRight: '4px solid transparent', borderTop: '6px solid #475569' }} />
+                        list="process-options"
+                        placeholder="e.g. Spray Dryer"
+                      />
+                      <datalist id="process-options">
+                        <option value="Spray Dryer" />
+                        <option value="Spin Flash Dryer" />
+                        <option value="Flash Dryer" />
+                        <option value="Vibratory Fluidized Bed Dryer" />
+                        <option value="Hot Air Generator" />
+                        <option value="Industrial Blowers" />
+                        <option value="Bag Filter" />
+                        <option value="Wet Scrubber System" />
+                        <option value="Reactors" />
+                        <option value="Heat Exchangers" />
+                        <option value="Pressure Vessels" />
+                        <option value="Sand Mill" />
+                        <option value="Screw Conveyor" />
+                        <option value="Ribbon Blender" />
+                        <option value="Strainer" />
+                        <option value="Expansion Bellows" />
+                        <option value="MVR Evaporator" />
+                        <option value="ZLD Plant" />
+                        <option value="Pollution Control System" />
+                      </datalist>
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
