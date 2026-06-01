@@ -125,7 +125,7 @@ const textItem = {
     opacity: 1, 
     y: 0, 
     filter: "blur(0px)",
-    transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] } 
+    transition: { duration: 0.8, ease: [0.2, 0.65, 0.3, 0.9] as any } 
   }
 };
 
