@@ -175,9 +175,11 @@ const Navbar = () => {
             }}
             className="flex items-center space-x-2"
           >
-            <div className="font-black text-xl md:text-2xl tracking-tighter text-foreground">
-              AXAR<span className="text-primary">ENTERPRISE</span>
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="Axar Enterprise Logo" 
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </button>
 
           {/* Desktop Navigation */}

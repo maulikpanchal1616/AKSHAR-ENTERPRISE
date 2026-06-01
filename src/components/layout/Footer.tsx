@@ -19,9 +19,11 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="lg:col-span-2 flex flex-col gap-6">
             <div className="flex items-center">
-              <div className="font-black text-2xl tracking-tighter text-foreground">
-                AXAR<span className="text-primary">ENTERPRISE</span>
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="Axar Enterprise Logo" 
+                className="h-10 md:h-12 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-md font-medium">
               Pioneering energy-efficient industrial drying, evaporation, and environmental engineering solutions since 2009. ISO 9001:2015 & ASME Certified.
