@@ -2,14 +2,21 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Send, User, Cpu, ShieldCheck, Zap, Terminal, MessageSquare, Phone, MapPin } from 'lucide-react';
+import { Bot, Send, User, X, MessageSquare, Phone, MapPin, ShieldCheck } from 'lucide-react';
 
 type Message = { id: number; role: 'user' | 'assistant'; content: string; ts: string };
 
 const INITIAL: Message = {
-  id: 1, role: 'assistant', ts: '14:20:01',
-  content: 'AX-1 Architect online. Loaded database for **AXAR Enterprise** engineering products, Vatva manufacturing facility, ASME/IBR compliance codes, and R&D testing trials.\n\nHow can I consult you on your process specifications today?',
+  id: 1, role: 'assistant', ts: new Date().toLocaleTimeString('en-US', { hour12: false }),
+  content: 'AX-1 Architect online. Loaded database for **AXAR Enterprise** engineering products.\n\nHow can I consult you on your process specifications today?',
 };
+
+const QUICK_QUERIES = [
+  { q: 'Spray Dryers Specs', icon: MessageSquare },
+  { q: 'Where is Vatva GIDC?', icon: MapPin },
+  { q: 'Contact Engineers', icon: Phone },
+  { q: 'ASME & IBR Compliance', icon: ShieldCheck }
+];
 
 const getResponse = (input: string): string => {
   const query = input.toLowerCase().trim();
@@ -113,7 +120,6 @@ const getResponse = (input: string): string => {
     }
   ];
 
-  // Calculate scores for each rule
   let bestResponse = "";
   let highestScore = 0;
 
@@ -121,7 +127,6 @@ const getResponse = (input: string): string => {
     let score = 0;
     for (const key of rule.keys) {
       if (query.includes(key)) {
-        // Multi-word matches score significantly higher to prevent false short matches
         score += key.split(' ').length * 2;
       }
     }
@@ -135,7 +140,6 @@ const getResponse = (input: string): string => {
     return bestResponse;
   }
 
-  // Fallback database introduction
   return `I have initialized my **AXAR Enterprise process database** but could not find a precise match for your query. \n\nI am fully calibrated to consult you on:\n- **Industrial Dryers:** Spray Dryers, Spin Flash Dryers, Vibratory Fluid Beds, and continuous Flash Dryers.\n- **Air & Thermal:** Hot Air Generators, Industrial Blowers, and metallic/silicon Expansion Bellows.\n- **Filtration & Vessels:** Pulse-jet Bag Filters, chemical Wet Scrubbers, ASME certified Reactors, and Duplex Strainers.\n- **Company Credentials:** ISO certifications, Vatva Ahmedabad facilities, and pilot trial testing lab runs.\n\nCould you please rephrase or specify a system category?`;
 };
 
@@ -144,7 +148,7 @@ const TS = () => new Date().toLocaleTimeString('en-US', { hour12: false });
 const renderMessageContent = (text: string) => {
   const lines = text.split('\n');
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+    <div className="flex flex-col gap-1.5">
       {lines.map((line, idx) => {
         let isBullet = false;
         let contentStr = line;
@@ -153,7 +157,6 @@ const renderMessageContent = (text: string) => {
           contentStr = line.trim().substring(2);
         }
 
-        // Process bold text **...**
         const regex = /\*\*(.*?)\*\*/g;
         const elements = [];
         let lastIndex = 0;
@@ -165,7 +168,7 @@ const renderMessageContent = (text: string) => {
             elements.push(contentStr.substring(lastIndex, matchIndex));
           }
           elements.push(
-            <strong key={matchIndex} style={{ color: '#0284c7', fontWeight: 800 }}>
+            <strong key={matchIndex} className="text-primary font-bold">
               {match[1]}
             </strong>
           );
@@ -178,9 +181,9 @@ const renderMessageContent = (text: string) => {
 
         if (isBullet) {
           return (
-            <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', paddingLeft: '0.25rem' }}>
-              <div style={{ width: 4, height: 4, borderRadius: '50%', background: '#0284c7', marginTop: '0.45rem', flexShrink: 0 }} />
-              <span style={{ fontSize: 13, lineHeight: 1.5, color: '#334155' }}>
+            <div key={idx} className="flex items-start gap-2 pl-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+              <span className="text-xs leading-relaxed text-foreground/90">
                 {elements.length > 0 ? elements : contentStr}
               </span>
             </div>
@@ -188,7 +191,7 @@ const renderMessageContent = (text: string) => {
         }
 
         return (
-          <p key={idx} style={{ fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+          <p key={idx} className="text-xs leading-relaxed m-0 text-foreground/90">
             {elements.length > 0 ? elements : contentStr}
           </p>
         );
@@ -197,12 +200,13 @@ const renderMessageContent = (text: string) => {
   );
 };
 
-const IndustrialChatbot = () => {
+const ChatWidget = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([INITIAL]);
-  const [input, setInput]       = useState('');
-  const [typing, setTyping]     = useState(false);
-  const scrollContainerRef     = useRef<HTMLDivElement>(null);
-  const isMounted               = useRef(false);
+  const [input, setInput] = useState('');
+  const [typing, setTyping] = useState(false);
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const send = (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,30 +214,26 @@ const IndustrialChatbot = () => {
     const user: Message = { id: Date.now(), role: 'user', content: input.trim(), ts: TS() };
     setMessages(p => [...p, user]);
     setInput('');
-    const container = scrollContainerRef.current;
-    if (container) {
-      setTimeout(() => {
-        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-      }, 50);
-    }
+    
     setTyping(true);
     setTimeout(() => {
       setMessages(p => [...p, { id: Date.now() + 1, role: 'assistant', content: getResponse(user.content), ts: TS() }]);
       setTyping(false);
-      if (container) {
-        setTimeout(() => {
-          container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-        }, 50);
-      }
+    }, 1000);
+  };
+
+  const askPredefined = (question: string) => {
+    if (typing) return;
+    const user: Message = { id: Date.now(), role: 'user', content: question, ts: TS() };
+    setMessages(p => [...p, user]);
+    setTyping(true);
+    setTimeout(() => {
+      setMessages(p => [...p, { id: Date.now() + 1, role: 'assistant', content: getResponse(user.content), ts: TS() }]);
+      setTyping(false);
     }, 1000);
   };
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
-    // Only auto-scroll the messages pane when a user interacts
     if (messages.length > 1 || typing) {
       const container = scrollContainerRef.current;
       if (container) {
@@ -245,163 +245,151 @@ const IndustrialChatbot = () => {
     }
   }, [messages, typing]);
 
-  const askPredefined = (question: string) => {
-    if (typing) return;
-    setInput(question);
-  };
-
   return (
-    <div className="chatbot-grid">
-
-      {/* LEFT: Info & Quick Action Panel */}
-      <div className="flex flex-col justify-between lg:h-full gap-6">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
-            <span className="t-label" style={{ marginBottom: '1rem' }}>Process Architect [AX-1]</span>
-            <h2 className="chatbot-sidebar-title" style={{ marginTop: '0.5rem' }}>
-              PROCESS<br />
-              <span style={{ color: '#0284c7' }}>ARCHITECT.</span>
-            </h2>
-            <p style={{ fontSize: 13, color: '#475569', marginTop: '1rem', lineHeight: 1.75, fontWeight: 500 }}>
-              Intelligent process advisor specialized in AXAR drying systems, ASME/IBR compliance, and thermal engineering.
-            </p>
-          </div>
-
-          {/* Quick Query Shortcuts */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            <span style={{ fontSize: 10, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#64748b' }}>Quick Consultations</span>
-            {[
-              { q: 'Spray Dryers Specs', icon: MessageSquare },
-              { q: 'Where is Vatva GIDC Facility?', icon: MapPin },
-              { q: 'Contact Engineering Leads', icon: Phone },
-              { q: 'ASME & IBR Compliance', icon: ShieldCheck }
-            ].map((shortcut, i) => (
+    <div className="fixed bottom-[80px] md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20, originX: 1, originY: 1 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="absolute bottom-[64px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary shadow-[0_0_15px_rgba(2,132,199,0.3)] flex items-center justify-center shrink-0">
+                  <Bot className="text-primary-foreground w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-black text-foreground tracking-tight">AX-1 ARCHITECT</div>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <div className={`w-1.5 h-1.5 rounded-full ${typing ? 'bg-amber-500' : 'bg-green-500'} animate-pulse`} />
+                    <span className={`text-[10px] font-black uppercase tracking-[0.15em] ${typing ? 'text-amber-500' : 'text-green-500'}`}>
+                      {typing ? 'Processing...' : 'Uplink Stable'}
+                    </span>
+                  </div>
+                </div>
+              </div>
               <button 
-                key={i} 
-                onClick={() => askPredefined(shortcut.q.replace(' Specs', '').replace(' Leads', '').replace(' Facility?', ''))}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '0.75rem',
-                  padding: '0.85rem 1.1rem', borderRadius: '0.75rem', background: '#ffffff',
-                  border: '1px solid rgba(0,0,0,0.06)', cursor: 'pointer', textAlign: 'left',
-                  transition: 'all 0.2s', width: '100%'
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = 'rgba(2,132,199,0.3)';
-                  e.currentTarget.style.background = 'rgba(2,132,199,0.01)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = 'rgba(0,0,0,0.06)';
-                  e.currentTarget.style.background = '#ffffff';
-                }}
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-secondary flex items-center justify-center text-muted-foreground transition-colors"
               >
-                <shortcut.icon style={{ width: 14, height: 14, color: '#0284c7', flexShrink: 0 }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#334155' }}>{shortcut.q}</span>
+                <X size={18} />
               </button>
-            ))}
-          </div>
-
-        </div>
-
-        {/* System Diagnostics Terminal */}
-        <div className="panel" style={{ padding: '1.25rem', background: 'rgba(14,165,233,0.04)', borderColor: 'rgba(14,165,233,0.15)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.875rem' }}>
-            <Terminal style={{ width: 14, height: 14, color: '#0284c7' }} />
-            <span style={{ fontSize: 9, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.3em', color: '#0f172a' }}>System Logs</span>
-          </div>
-          <div style={{ fontFamily: 'monospace', fontSize: 9, color: '#0284c7', lineHeight: 1.9 }}>
-            <div>[SYS] AX-1 CLIENT DATABASE ONLINE</div>
-            <div>[SYS] DRYING SYSTEMS SPEC-MATRIX ACTIVE</div>
-            <div style={{ color: '#16a34a' }}>[SYS] TURNKEY OPERATION AUDITED (ISO 9001)</div>
-          </div>
-        </div>
-      </div>
-
-      {/* RIGHT: Chat Window */}
-      <div className="panel" style={{ display: 'flex', flexDirection: 'column', height: 640, borderColor: 'rgba(2,132,199,0.15)', boxShadow: '0 24px 64px rgba(0,0,0,0.06)' }}>
-
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(0,0,0,0.05)', flexShrink: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '0.75rem', background: '#0284c7', boxShadow: '0 0 16px rgba(2,132,199,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <Bot style={{ color: '#fff', width: 20, height: 20 }} />
             </div>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 900, color: '#0f172a', letterSpacing: '0.02em' }}>AX-1 ARCHITECT</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', background: typing ? '#d97706' : '#16a34a' }} className="anim-pulse" />
-                <span style={{ fontSize: 9, fontWeight: 900, color: typing ? '#d97706' : '#16a34a', textTransform: 'uppercase', letterSpacing: '0.25em' }}>
-                  {typing ? 'Processing...' : 'Uplink Stable'}
-                </span>
-              </div>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: 5 }}>
-            {[1,2,3].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(14,165,233,0.2)' }} />)}
-          </div>
-        </div>
 
-        {/* Messages Pane */}
-        <div ref={scrollContainerRef} style={{ flex: 1, overflowY: 'auto', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {messages.map(msg => (
-            <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              style={{ display: 'flex', justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start' }}>
-              <div style={{ maxWidth: '82%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: 6, flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
-                  <div style={{ width: 26, height: 26, borderRadius: '0.4rem', background: msg.role === 'user' ? '#f1f5f9' : 'rgba(2,132,199,0.08)', border: '1px solid rgba(0,0,0,0.07)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    {msg.role === 'user' ? <User style={{ width: 13, height: 13, color: '#64748b' }} /> : <Bot style={{ width: 13, height: 13, color: '#0284c7' }} />}
-                  </div>
-                  <span style={{ fontSize: 9, fontWeight: 900, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.15em' }}>{msg.ts}</span>
-                </div>
-                <div style={{
-                  padding: '0.9rem 1.2rem', borderRadius: '1rem',
-                  background: msg.role === 'user' ? '#f1f5f9' : '#ffffff',
-                  border: `1px solid ${msg.role === 'user' ? 'rgba(0,0,0,0.06)' : 'rgba(2,132,199,0.15)'}`,
-                  color: msg.role === 'user' ? '#334155' : '#1e293b',
-                  boxShadow: msg.role === 'user' ? 'none' : '0 4px 12px rgba(2,132,199,0.02)'
-                }}>
-                  {renderMessageContent(msg.content)}
+            {/* Quick Actions (only show if no user messages yet to save space) */}
+            {messages.length === 1 && !typing && (
+              <div className="px-4 pt-4 shrink-0 bg-background/50 border-b border-border">
+                <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground block mb-2">Quick Consultations</span>
+                <div className="flex flex-wrap gap-2 pb-4">
+                  {QUICK_QUERIES.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => askPredefined(q.q)}
+                      className="text-[11px] font-bold text-foreground bg-card border border-border hover:border-primary/50 hover:bg-primary/5 px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5"
+                    >
+                      <q.icon size={12} className="text-primary" />
+                      {q.q}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </motion.div>
-          ))}
-
-          <AnimatePresence>
-            {typing && (
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                <div style={{ padding: '0.875rem 1.1rem', borderRadius: '1rem', background: 'rgba(14,165,233,0.05)', border: '1px solid rgba(14,165,233,0.14)', width: 'fit-content' }}>
-                  <div style={{ display: 'flex', gap: 5 }}>
-                    {[0,1,2].map(i => <div key={i} className="anim-pulse" style={{ width: 8, height: 8, borderRadius: '50%', background: '#0ea5e9', animationDelay: `${i * 0.18}s` }} />)}
-                  </div>
-                </div>
-              </motion.div>
             )}
-          </AnimatePresence>
-        </div>
 
-        {/* Input Form */}
-        <form onSubmit={send} style={{ padding: '1rem 1.5rem', borderTop: '1px solid rgba(0,0,0,0.06)', display: 'flex', gap: '0.75rem', flexShrink: 0 }}>
-          <input
-            className="input"
-            type="text"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Ask about spray dryers, Vatva GIDC, ASME, or trial testing..."
-            disabled={typing}
-            style={{ opacity: typing ? 0.5 : 1 }}
-          />
-          <button type="submit" disabled={!input.trim() || typing} style={{
-            width: 48, height: 48, borderRadius: '0.75rem', border: '1px solid rgba(0,0,0,0.08)', flexShrink: 0,
-            background: input.trim() && !typing ? '#0284c7' : '#f1f5f9',
-            boxShadow: input.trim() && !typing ? '0 0 20px rgba(2,132,199,0.25)' : 'none',
-            cursor: input.trim() && !typing ? 'pointer' : 'not-allowed',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.25s',
-          }}>
-            <Send style={{ width: 18, height: 18, color: input.trim() && !typing ? '#fff' : '#94a3b8' }} />
-          </button>
-        </form>
-      </div>
+            {/* Chat Area */}
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 bg-background/50">
+              {messages.map(msg => (
+                <motion.div key={msg.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className="max-w-[85%]">
+                    <div className={`flex items-center gap-2 mb-1.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 border ${msg.role === 'user' ? 'bg-secondary border-border' : 'bg-primary/10 border-primary/20'}`}>
+                        {msg.role === 'user' ? <User className="w-3 h-3 text-muted-foreground" /> : <Bot className="w-3 h-3 text-primary" />}
+                      </div>
+                      <span className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.1em]">{msg.ts}</span>
+                    </div>
+                    <div className={`p-3 rounded-2xl ${msg.role === 'user' ? 'bg-secondary text-secondary-foreground rounded-tr-sm' : 'bg-card text-card-foreground border border-border shadow-sm rounded-tl-sm'}`}>
+                      {renderMessageContent(msg.content)}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+
+              <AnimatePresence>
+                {typing && (
+                  <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="flex justify-start">
+                    <div className="px-4 py-3 rounded-2xl bg-card border border-border shadow-sm rounded-tl-sm">
+                      <div className="flex gap-1.5">
+                        {[0,1,2].map(i => (
+                          <div key={i} className="w-2 h-2 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.15}s` }} />
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Input Form */}
+            <form onSubmit={send} className="p-3 bg-card border-t border-border shrink-0 flex gap-2">
+              <input
+                type="text"
+                placeholder="Ask about spray dryers, Vatva GIDC..."
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                disabled={typing}
+                className="flex-1 bg-background border border-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary text-foreground disabled:opacity-50"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || typing}
+                className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground transition-all hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground"
+              >
+                <Send size={16} />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Button */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="w-14 h-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_25px_rgba(2,132,199,0.4)] cursor-pointer relative z-50 border border-primary/20 outline-none"
+      >
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.div
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <X size={28} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="chat"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <Bot size={28} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
     </div>
   );
 };
 
-export default IndustrialChatbot;
+export default ChatWidget;

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Info, Layers, Gauge, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Check, Info, Layers, Gauge, ChevronDown, ChevronUp, Zap, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
@@ -322,11 +322,12 @@ const ProductComparison = () => {
                   {/* Action Buttons */}
                   <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
                     <button
-                      className="btn btn-blue"
-                      style={{ flex: 1, fontSize: 11, padding: '0.65rem' }}
+                      className="btn btn-blue group"
+                      style={{ flex: 1, fontSize: 11, padding: '0.65rem', gap: '0.4rem' }}
                       onClick={() => { window.location.href = `/products/${p.id}`; }}
                     >
-                      Technical Data
+                      <span>Technical Data</span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
                     </button>
                     <button
                       className="btn btn-ghost"
