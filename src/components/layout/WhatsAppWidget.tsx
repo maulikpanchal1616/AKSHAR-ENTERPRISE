@@ -110,29 +110,29 @@ const WhatsAppWidget = () => {
         whileTap={{ scale: 0.95 }}
         className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_25px_rgba(37,211,102,0.4)] cursor-pointer relative z-50 border-none outline-none"
       >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <X size={28} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="chat"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.15 }}
-            >
-              <MessageCircle size={28} />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <motion.div
+          animate={{ 
+            rotate: isOpen ? 90 : 0, 
+            scale: isOpen ? 0.5 : 1, 
+            opacity: isOpen ? 0 : 1 
+          }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="absolute flex items-center justify-center inset-0"
+        >
+          <MessageCircle size={28} />
+        </motion.div>
+        
+        <motion.div
+          animate={{ 
+            rotate: isOpen ? 0 : -90, 
+            scale: isOpen ? 1 : 0.5, 
+            opacity: isOpen ? 1 : 0 
+          }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="absolute flex items-center justify-center inset-0"
+        >
+          <X size={28} />
+        </motion.div>
       </motion.button>
     </div>
   );
