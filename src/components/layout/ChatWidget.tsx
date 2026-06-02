@@ -250,11 +250,12 @@ const ChatWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20, originX: 1, originY: 1 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute bottom-[64px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "bottom right" }}
+            className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
@@ -362,15 +363,15 @@ const ChatWidget = () => {
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_25px_rgba(2,132,199,0.4)] cursor-pointer relative z-50 border border-primary/20 outline-none"
+        className="w-14 h-14 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-[0_8px_25px_rgba(2,132,199,0.4)] cursor-pointer relative z-50 border border-primary/20 outline-none overflow-hidden"
       >
         <motion.div
           animate={{ 
-            rotate: isOpen ? 90 : 0, 
-            scale: isOpen ? 0.5 : 1, 
+            rotate: isOpen ? 180 : 0, 
+            scale: isOpen ? 0 : 1, 
             opacity: isOpen ? 0 : 1 
           }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="absolute flex items-center justify-center inset-0"
         >
           <Bot size={28} />
@@ -378,11 +379,11 @@ const ChatWidget = () => {
         
         <motion.div
           animate={{ 
-            rotate: isOpen ? 0 : -90, 
-            scale: isOpen ? 1 : 0.5, 
+            rotate: isOpen ? 0 : -180, 
+            scale: isOpen ? 1 : 0, 
             opacity: isOpen ? 1 : 0 
           }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="absolute flex items-center justify-center inset-0"
         >
           <X size={28} />

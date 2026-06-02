@@ -26,11 +26,12 @@ const WhatsAppWidget = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20, originX: 1, originY: 1 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="absolute bottom-[64px] right-0 w-[calc(100vw-32px)] sm:w-[340px] glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50"
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            style={{ transformOrigin: "bottom right" }}
+            className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[340px] glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50"
           >
             {/* Header */}
             <div className="bg-[#25D366] p-4 flex items-center justify-between relative overflow-hidden">
@@ -108,15 +109,15 @@ const WhatsAppWidget = () => {
         animate={{ scale: 1 }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_25px_rgba(37,211,102,0.4)] cursor-pointer relative z-50 border-none outline-none"
+        className="w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_8px_25px_rgba(37,211,102,0.4)] cursor-pointer relative z-50 border-none outline-none overflow-hidden"
       >
         <motion.div
           animate={{ 
-            rotate: isOpen ? 90 : 0, 
-            scale: isOpen ? 0.5 : 1, 
+            rotate: isOpen ? 180 : 0, 
+            scale: isOpen ? 0 : 1, 
             opacity: isOpen ? 0 : 1 
           }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="absolute flex items-center justify-center inset-0"
         >
           <MessageCircle size={28} />
@@ -124,11 +125,11 @@ const WhatsAppWidget = () => {
         
         <motion.div
           animate={{ 
-            rotate: isOpen ? 0 : -90, 
-            scale: isOpen ? 1 : 0.5, 
+            rotate: isOpen ? 0 : -180, 
+            scale: isOpen ? 1 : 0, 
             opacity: isOpen ? 1 : 0 
           }}
-          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="absolute flex items-center justify-center inset-0"
         >
           <X size={28} />
