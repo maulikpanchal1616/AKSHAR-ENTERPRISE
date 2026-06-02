@@ -247,16 +247,18 @@ const ChatWidget = () => {
 
   return (
     <div className="fixed bottom-[80px] md:bottom-6 right-4 md:right-6 z-50 flex flex-col items-end">
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            style={{ transformOrigin: "bottom right" }}
-            className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
-          >
+      <motion.div
+        initial={false}
+        animate={{ 
+          opacity: isOpen ? 1 : 0, 
+          scale: isOpen ? 1 : 0.9, 
+          y: isOpen ? 0 : 20,
+          pointerEvents: isOpen ? "auto" : "none"
+        }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: "bottom right" }}
+        className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
+      >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
               <div className="flex items-center gap-3">
@@ -352,9 +354,7 @@ const ChatWidget = () => {
                 <Send size={16} />
               </button>
             </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
 
       {/* Floating Button */}
       <motion.button

@@ -23,16 +23,18 @@ const WhatsAppWidget = () => {
 
   return (
     <div className="fixed bottom-[144px] md:bottom-[88px] right-4 md:right-6 z-40 flex flex-col items-end">
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            style={{ transformOrigin: "bottom right" }}
-            className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[340px] glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50"
-          >
+      <motion.div
+        initial={false}
+        animate={{ 
+          opacity: isOpen ? 1 : 0, 
+          scale: isOpen ? 1 : 0.9, 
+          y: isOpen ? 0 : 20,
+          pointerEvents: isOpen ? "auto" : "none"
+        }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: "bottom right" }}
+        className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[340px] glass-panel rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50"
+      >
             {/* Header */}
             <div className="bg-[#25D366] p-4 flex items-center justify-between relative overflow-hidden">
               <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.5)_0%,transparent_50%)]" />
@@ -98,9 +100,7 @@ const WhatsAppWidget = () => {
                 <Send size={18} className="ml-1" />
               </button>
             </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      </motion.div>
 
       {/* Floating Button */}
       <motion.button
