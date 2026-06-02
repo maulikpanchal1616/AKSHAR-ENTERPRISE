@@ -7,11 +7,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 
 const navLinks = [
-  { label: 'Platform',   path: '/',           targetId: 'hero' },
-  { label: 'Solutions',  path: '/solutions',  targetId: 'solutions' },
-  { label: 'Products',   path: '/products',   targetId: 'products' },
-  { label: 'Showcase',   path: '/showcase',   targetId: 'showcase' },
-  { label: 'Contact',    path: '/contact',    targetId: 'rfq' },
+  { label: 'Platform',          path: '/',                            targetId: 'hero' },
+  { label: 'Solutions',         path: '/solutions',                   targetId: 'solutions' },
+  { label: 'Products',          path: '/products',                    targetId: 'products' },
+  { label: 'Showcase',          path: '/showcase',                    targetId: 'showcase' },
+  { label: 'Corporate Profile', path: '/company/corporate-profile',   targetId: '' },
+  { label: 'Contact',           path: '/contact',                     targetId: 'rfq' },
 ];
 
 const Navbar = () => {
@@ -98,6 +99,13 @@ const Navbar = () => {
 
   const navigateTo = (link: { label: string; path: string; targetId: string }) => {
     setMobileOpen(false);
+    
+    // If there is no targetId, it's a direct page route
+    if (!link.targetId) {
+      router.push(link.path);
+      return;
+    }
+
     if (pathname === '/') {
       const el = document.getElementById(link.targetId);
       if (el) {

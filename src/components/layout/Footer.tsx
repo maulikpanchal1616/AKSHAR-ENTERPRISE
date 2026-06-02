@@ -4,9 +4,26 @@ import React from 'react';
 import { MapPin, Mail, Phone, ArrowUpRight, Globe } from 'lucide-react';
 
 const Footer = () => {
-  const links = [
-    { label: 'Equipment', items: ['Spray Dryers', 'Spin Flash Dryers', 'Rotary Dryers', 'Fluid Bed Dryers', 'Evaporators'] },
-    { label: 'Company', items: ['About Us', 'Manufacturing Facility', 'Certifications', 'Contact'] }
+  const linkGroups = [
+    { 
+      label: 'Equipment', 
+      items: [
+        { label: 'Spray Dryers', path: '/products/spray-dryer' },
+        { label: 'Spin Flash Dryers', path: '/products/spin-flash-dryer' },
+        { label: 'Rotary Dryers', path: '/products/rotary-dryer' },
+        { label: 'Fluid Bed Dryers', path: '/products/vibratory-fluidized-bed' },
+        { label: 'Evaporators', path: '/products/evaporators' }
+      ] 
+    },
+    { 
+      label: 'Company', 
+      items: [
+        { label: 'Corporate Profile', path: '/company/corporate-profile' },
+        { label: 'Manufacturing Facility', path: '/company/manufacturing-facility' },
+        { label: 'Quality Standards', path: '/company/quality-standards' },
+        { label: 'Contact', path: '/contact' }
+      ] 
+    }
   ];
 
   return (
@@ -55,22 +72,19 @@ const Footer = () => {
           </div>
 
           {/* Nav Links */}
-          {links.map(group => (
+          {linkGroups.map(group => (
             <div key={group.label} className="flex flex-col gap-6">
               <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{group.label}</span>
               <div className="flex flex-col gap-4">
-                {group.items.map(item => {
-                  const slug = item.toLowerCase().replace(/ /g, '-');
-                  return (
-                    <a 
-                      key={item} 
-                      href={`/products/${slug}`}
-                      className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 no-underline"
-                    >
-                      {item}
-                    </a>
-                  );
-                })}
+                {group.items.map(item => (
+                  <a 
+                    key={item.label} 
+                    href={item.path}
+                    className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 no-underline"
+                  >
+                    {item.label}
+                  </a>
+                ))}
               </div>
             </div>
           ))}
