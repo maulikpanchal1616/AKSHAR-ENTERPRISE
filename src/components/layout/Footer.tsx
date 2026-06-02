@@ -1,7 +1,8 @@
 "use client";
 
 import React from 'react';
-import { MapPin, Mail, Phone, ArrowUpRight, Globe } from 'lucide-react';
+import Link from 'next/link';
+import { MapPin, Mail, Phone, Globe } from 'lucide-react';
 
 const Footer = () => {
   const linkGroups = [
@@ -77,13 +78,13 @@ const Footer = () => {
               <span className="text-[10px] font-bold text-primary uppercase tracking-widest">{group.label}</span>
               <div className="flex flex-col gap-4">
                 {group.items.map(item => (
-                  <a 
+                  <Link 
                     key={item.label} 
                     href={item.path}
                     className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 no-underline"
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

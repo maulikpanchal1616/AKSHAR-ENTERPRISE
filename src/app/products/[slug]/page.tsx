@@ -31,6 +31,48 @@ const productData = {
       "Efficiency Rate": "Up to 88% Thermal Economy"
     }
   },
+  "rotary-dryer": {
+    name: "Rotary Dryer",
+    category: "DRYING SYSTEMS",
+    image: "https://axarenterprise.com/WObg/sprayDryer.png",
+    description: "Industrial Rotary Dryers engineered for continuous drying of free-flowing bulk solids, ores, and granular materials. Utilizing direct or indirect heat transfer, our heavy-duty rotary drum systems offer robust, high-capacity moisture reduction with exceptional thermal efficiency.",
+    features: [
+      "Heavy-duty cylindrical drum with custom-designed lifter flights",
+      "Direct and indirect heat transfer configurations",
+      "Variable speed drive for optimized retention time",
+      "Robust trunnion wheel and riding ring support system",
+      "Integrated exhaust gas handling and particulate recovery"
+    ],
+    specs: {
+      "Capacity Range": "1 to 50 Tons per hour",
+      "Drum Diameter": "1m to 4m",
+      "Material of Construction": "Carbon Steel / SS304 / SS316",
+      "Heating Media": "Direct Gas / Oil Burner / Steam",
+      "Thermal Efficiency": "Up to 85%",
+      "Drive Mechanism": "Girth Gear & Pinion / Friction Drive"
+    }
+  },
+  "evaporators": {
+    name: "Evaporators",
+    category: "EVAPORATION SYSTEMS",
+    image: "https://axarenterprise.com/WObg/evaporator.png",
+    description: "High-efficiency industrial evaporation systems designed for concentration of liquids, effluent treatment (ZLD), and solvent recovery. Featuring Falling Film, Forced Circulation, and Multiple Effect Evaporator (MEE) technologies optimized for minimal energy consumption.",
+    features: [
+      "Multiple Effect (MEE) and Thermal Vapor Recompression (TVR) options",
+      "Falling film and forced circulation designs for viscous/scaling liquids",
+      "Zero Liquid Discharge (ZLD) plant integration capability",
+      "Fully automated PLC-based density and flow control",
+      "High thermal economy and reduced steam consumption"
+    ],
+    specs: {
+      "Evaporation Capacity": "500 to 50,000 kg/hr of water",
+      "Technology Type": "MEE / MVR / TVR / Agitated Thin Film",
+      "Material of Construction": "SS316L / SS304 / Titanium / Hastelloy",
+      "Heat Transfer Efficiency": "High U-value tubular calandria",
+      "Vacuum System": "Water ring pump / Steam ejector",
+      "Automation": "Fully automated PLC-SCADA loop"
+    }
+  },
   "spin-flash-dryer": {
     name: "Spin Flash Dryer",
     category: "DRYING SYSTEMS",
