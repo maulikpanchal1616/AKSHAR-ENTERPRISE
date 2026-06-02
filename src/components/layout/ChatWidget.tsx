@@ -257,7 +257,7 @@ const ChatWidget = () => {
         }}
         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         style={{ transformOrigin: "bottom right" }}
-        className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] enterprise-card rounded-2xl overflow-hidden flex flex-col shadow-2xl border-primary/20"
+        className="absolute bottom-[72px] right-0 w-[calc(100vw-32px)] sm:w-[360px] h-[60vh] sm:h-[480px] min-h-[350px] bg-card text-card-foreground border-border rounded-2xl overflow-hidden flex flex-col shadow-2xl border border-primary/20"
       >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border bg-card shrink-0">
